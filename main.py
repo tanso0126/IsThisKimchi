@@ -298,5 +298,7 @@ def main_page():
     # Initial view
     update_view()
 
-app.add_static_files('/app', APP_DIR)
-ui.run(title='이게 김치일까?', language='ko', reload=False)
+if __name__ in {"__main__", "__mp_main__"}:
+    import os
+    port = int(os.environ.get('PORT', 8080))
+    ui.run(title='이게 김치일까?', language='ko', reload=False, port=port, host='0.0.0.0')
