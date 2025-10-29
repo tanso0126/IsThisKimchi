@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import axios from 'axios'; // axios를 불러와요!
+import axios from 'axios';
 import './App.css';
 
 // --- API 기본 URL ---
@@ -13,6 +13,7 @@ interface Image {
   url: string;
   isKimchi: boolean;
   description: string;
+  importFunc?: () => Promise<ImageModule>;
 }
 
 interface ImageModule {
@@ -24,7 +25,17 @@ interface Score {
   score: number;
 }
 
-// --- 데이터 로딩 및 처리 (기존 코드와 동일) ---
+// --- Helper function for proper shuffling (Fisher-Yates Algorithm) ---
+function shuffleArray<T>(array: T[]): T[] {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+}
+
+// --- 데이터 로딩 및 처리 ---
 const kimchiModules = import.meta.glob('/src/assets/김치/**/*.{[jJ][pP][gG],[jJ][pP][eE][gG],[pP][nN][gG],[gG][iI][fF]}') as Record<string, () => Promise<ImageModule>>;
 const nonKimchiModules = import.meta.glob('/src/assets/노김치/**/*.{[jJ][pP][gG],[jJ][pP][eE][gG],[pP][nN][gG],[gG][iI][fF]}') as Record<string, () => Promise<ImageModule>>;
 
@@ -55,50 +66,45 @@ const createShuffledDeck = () => {
 
   const allNonKimchiData = Object.keys(nonKimchiModules).map(path => {
     const pathParts = path.split('/');
-    const fileName = pathParts[pathParts.length - 1];
-    const name = fileName.substring(0, fileName.lastIndexOf('.'));
+    const categoryName = pathParts[pathParts.length - 2];
     return {
       id: path,
-      name: name,
+      name: categoryName,
       isKimchi: false,
-      description: '이것은 김치가 아닙니다.',
+      description: `이것은 김치가 아닌 "${categoryName}"입니다.`,
       importFunc: nonKimchiModules[path],
     };
   });
 
-  const shuffledKimchi = allKimchiData.sort(() => Math.random() - 0.5);
+  const shuffledKimchi = shuffleArray(allKimchiData);
   const sessionKimchi = shuffledKimchi.slice(0, 20);
 
+  const shuffledNonKimchi = shuffleArray(allNonKimchiData);
   const sessionNonKimchi: (typeof allNonKimchiData[0])[] = [];
-  if (allNonKimchiData.length > 0) {
+  if (shuffledNonKimchi.length > 0) {
       for (let i = 0; i < 20; i++) {
-        sessionNonKimchi.push({ ...allNonKimchiData[i % allNonKimchiData.length], id: `non-kimchi-session-${i}` });
+        sessionNonKimchi.push({ ...shuffledNonKimchi[i % shuffledNonKimchi.length], id: `non-kimchi-session-${i}` });
       }
   }
 
   const finalDeck = [...sessionKimchi, ...sessionNonKimchi];
-  return finalDeck.sort(() => Math.random() - 0.5);
+  return shuffleArray(finalDeck);
 };
-
-const gameDeck = createShuffledDeck();
 
 // --- 컴포넌트 정의 ---
 
 const ItemTypes = { CARD: 'card' };
 
-const KimchiCard = ({ image, setIsDragging }: { image: Image, setIsDragging: (isDragging: boolean) => void }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
+const KimchiCard = ({ image }: { image: Image }) => {
+  const [, drag] = useDrag(() => ({
     type: ItemTypes.CARD,
     item: image,
-    collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
   }));
 
-  useEffect(() => {
-    setIsDragging(isDragging);
-  }, [isDragging, setIsDragging]);
-
   return (
-    <div ref={drag} style={{ backgroundImage: `url(${image.url})` }} className={'card'} />
+    <div ref={drag} style={{ backgroundImage: `url(${image.url})` }} className={'card'}>
+       <h3>{image.name}</h3>
+    </div>
   );
 };
 
@@ -117,48 +123,46 @@ const DropZone = ({ onDrop, isKimchiZone }: { onDrop: (item: Image) => void; isK
 
 // --- 메인 앱 컴포넌트 ---
 function App() {
-  // 화면 상태 관리: 'menu', 'game', 'gameover', 'leaderboard'
   const [view, setView] = useState('menu');
+  const [gameDeck, setGameDeck] = useState<Image[]>([]);
   const [activeCards, setActiveCards] = useState<Image[]>([]);
   const [deckIndex, setDeckIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [timer, setTimer] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
-
-  // 게임오버 및 리더보드 관련 상태
   const [gameOverImage, setGameOverImage] = useState<Image | null>(null);
   const [nickname, setNickname] = useState('');
   const [leaderboard, setLeaderboard] = useState<Score[]>([]);
 
-  const loadInitialCards = useCallback(async () => {
+  const startGame = useCallback(async () => {
     setIsLoading(true);
+    setView('game');
+    setScore(0);
+    setGameOverImage(null);
+    
+    const newDeck = createShuffledDeck();
+    setGameDeck(newDeck);
+
     const initialLoadCount = 10;
     const cardPromises: Promise<Image>[] = [];
-
-    for (let i = 0; i < Math.min(initialLoadCount, gameDeck.length); i++) {
-      const cardData = gameDeck[i];
-      cardPromises.push(
-        (cardData.importFunc as () => Promise<ImageModule>)().then(module => ({
-          ...(cardData as Omit<typeof cardData, 'importFunc'>),
-          url: module.default,
-        }))
-      );
+    for (let i = 0; i < Math.min(initialLoadCount, newDeck.length); i++) {
+        const cardData = newDeck[i];
+        if (cardData.importFunc) {
+            cardPromises.push(
+                cardData.importFunc().then(module => ({
+                    ...cardData,
+                    url: module.default,
+                }))
+            );
+        }
     }
-
     const initialCards = await Promise.all(cardPromises);
     setActiveCards(initialCards);
     setDeckIndex(initialLoadCount);
+
     setIsLoading(false);
     setTimer(5);
   }, []);
-
-  const startGame = () => {
-    loadInitialCards();
-    setScore(0);
-    setGameOverImage(null);
-    setView('game');
-  };
 
   useEffect(() => {
     if (view !== 'game' || isLoading || activeCards.length === 0) return;
@@ -188,22 +192,32 @@ function App() {
     setScore(prevScore => prevScore + 1);
     setTimer(5);
 
-    setDeckIndex(currentIndex => {
-      const nextIndex = currentIndex + 1;
-      if (currentIndex < gameDeck.length) {
-        const nextCardData = gameDeck[currentIndex];
-        const loadAndSet = async () => {
-          const module = await (nextCardData.importFunc as () => Promise<ImageModule>)();
-          const newCard: Image = { ...(nextCardData as any), url: module.default };
-          setActiveCards(prev => [...prev.slice(1), newCard]);
-        };
-        loadAndSet();
-      } else {
-        setActiveCards(prev => prev.slice(1));
-      }
-      return nextIndex;
+    // 상태 업데이트가 꼬이지 않도록 함수형 업데이트를 사용해요!
+    setDeckIndex(prevDeckIndex => {
+        const newDeckIndex = prevDeckIndex + 1;
+
+        setGameDeck(prevGameDeck => {
+            let updatedDeck = prevGameDeck;
+            // 덱의 끝에 가까워지면 새로운 카드를 뒤에 추가해요.
+            if (newDeckIndex >= updatedDeck.length - 5) {
+                updatedDeck = [...updatedDeck, ...createShuffledDeck()];
+            }
+
+            const nextCardData = updatedDeck[prevDeckIndex]; // 이전 인덱스를 사용해 정확한 다음 카드를 가져와요.
+            if (nextCardData?.importFunc) {
+                nextCardData.importFunc().then(module => {
+                    const newCard: Image = { ...nextCardData, url: module.default };
+                    setActiveCards(prevActiveCards => [...prevActiveCards.slice(1), newCard]);
+                });
+            } else {
+                setActiveCards(prevActiveCards => prevActiveCards.slice(1));
+            }
+            return updatedDeck;
+        });
+
+        return newDeckIndex;
     });
-  }, []);
+}, []);
 
   const handleScoreSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,8 +246,6 @@ function App() {
     }
   };
 
-  // --- 뷰 렌더링 ---
-
   if (view === 'menu') {
     return (
       <div className="gameContainer">
@@ -246,7 +258,7 @@ function App() {
   }
 
   if (isLoading) {
-    return <div>게임을 불러오는 중...</div>;
+    return <div className="gameContainer"><h1>카드를 섞는 중...</h1></div>;
   }
 
   if (view === 'gameover' && gameOverImage) {
@@ -254,8 +266,9 @@ function App() {
       <div className="gameContainer">
         <h1>게임 오버!</h1>
         <h2>최종 점수: {score}</h2>
-        <div className='card' style={{backgroundImage: `url(${gameOverImage.url})`, position: 'relative', marginBottom: '20px'}}></div>
-        <h3>이건 "{gameOverImage.name}" 이었어요!</h3>
+        <div className='card' style={{backgroundImage: `url(${gameOverImage.url})`, position: 'relative', marginBottom: '20px'}}>
+          <h3>이건 "{gameOverImage.name}" 이었어요!</h3>
+        </div>
         <p style={{maxWidth: '350px'}}>{gameOverImage.description}</p>
         
         <form onSubmit={handleScoreSubmit} style={{marginTop: '20px'}}>
@@ -278,25 +291,27 @@ function App() {
     return (
       <div className="gameContainer">
         <h1>명예의 전당</h1>
-        <div style={{width: '300px', maxHeight: '400px', overflowY: 'auto', border: '1px solid #ccc', borderRadius: '10px', padding: '10px'}}>
+        <div className="leaderboardContainer">
           {leaderboard.map((entry, index) => (
-            <div key={index} style={{display: 'flex', justifyContent: 'space-between', padding: '5px'}}>
+            <div key={index} className="leaderboardEntry">
               <span>{index + 1}. {entry.nickname}</span>
               <span>{entry.score}점</span>
             </div>
           ))}
         </div>
-        <button onClick={startGame} style={{marginTop: '20px'}}>새 게임 시작</button>
+        <button onClick={() => setView('menu')} style={{marginTop: '20px'}}>메뉴로 돌아가기</button>
       </div>
     )
   }
 
   return (
     <>
-      <div className={`dropZoneContainer ${isDragging ? 'visible' : ''}`}>
-        <DropZone onDrop={(item) => handleDrop(item, false)} isKimchiZone={false} />
-        <DropZone onDrop={(item) => handleDrop(item, true)} isKimchiZone={true} />
-      </div>
+      {view === 'game' && (
+        <div className="dropZoneContainer">
+          <DropZone onDrop={(item) => handleDrop(item, false)} isKimchiZone={false} />
+          <DropZone onDrop={(item) => handleDrop(item, true)} isKimchiZone={true} />
+        </div>
+      )}
       <div className="gameContainer">
         <div style={{position: 'absolute', top: '20px', right: '20px'}}>
             <button onClick={showLeaderboard}>🏆</button>
@@ -309,14 +324,11 @@ function App() {
             <KimchiCard 
               key={activeCards[0].id}
               image={activeCards[0]} 
-              setIsDragging={setIsDragging}
             />
           ) : (
             <div>
-              <h1>축하합니다!</h1>
-              <h2>모든 문제를 다 맞혔어요!</h2>
-              <h3>최종 점수: {score}</h3>
-              <button onClick={startGame} style={{marginTop: '20px'}}>새로운 게임 시작하기</button>
+              <h1>잠시만요...</h1>
+              <h2>새로운 카드를 섞고 있어요!</h2>
             </div>
           )}
         </div>
