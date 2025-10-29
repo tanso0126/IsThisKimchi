@@ -6,7 +6,7 @@ from pathlib import Path
 
 from nicegui import app, ui
 
-# --- 1. 데이터 및 에셋 로직 ---
+# --- 1. 전역 데이터 및 설정 (모든 사용자에게 동일) ---
 
 SCORE_FILE = Path(__file__).parent / 'backend' / 'scores.json'
 APP_DIR = Path(__file__).parent / 'app'
@@ -292,24 +292,24 @@ def submit_score(nickname, score, game_mode):
     scores[game_mode] = mode_scores
     save_scores(scores)
 
-# --- 4. UI 상태 및 로직 ---
-state = {
-    'view': 'menu',
-    'language': 'ko',
-    'game_mode': None,
-    'deck': [],
-    'score': 0,
-    'timer_value': 30,
-    'game_over_image': None,
-}
-
-def T(key: str) -> str:
-    return TRANSLATIONS[state['language']].get(key, key)
-
-# --- 5. UI 레이아웃 ---
+# --- 4. UI 페이지 ---
 
 @ui.page('/')
 def main_page():
+    # 각 사용자 세션(브라우저 탭)을 위한 로컬 상태
+    state = {
+        'view': 'menu',
+        'language': 'ko',
+        'game_mode': None,
+        'deck': [],
+        'score': 0,
+        'timer_value': 30,
+        'game_over_image': None,
+    }
+
+    def T(key: str) -> str:
+        return TRANSLATIONS[state['language']].get(key, key)
+
     ui.add_head_html('''
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
@@ -327,7 +327,9 @@ def main_page():
     ui.dark_mode().enable()
 
     view_container = ui.column().classes('w-full items-center justify-center')
-    game_timer = ui.timer(1.0, lambda: handle_timer_tick(), active=False)
+    
+    # 타이머는 게임 화면이 만들어질 때 설정됩니다.
+    game_timer = ui.timer(1.0, lambda: None, active=False)
 
     def build_menu():
         with view_container.classes('gap-4 text-center'):
@@ -342,13 +344,25 @@ def main_page():
             ui.button(T('leaderboard'), on_click=show_leaderboard).classes('px-7 py-2 text-lg mt-4')
 
     def build_game():
+        score_label = None
+        timer_label = None
+
+        def handle_timer_tick_local():
+            state['timer_value'] -= 1
+            if timer_label:
+                timer_label.text = f"{T('time_left')}: {state['timer_value']}{T('seconds')}"
+            if state['timer_value'] <= 0:
+                game_over()
+
+        game_timer.callback = handle_timer_tick_local
+
         with view_container.classes('w-full items-center justify-center gap-2'):
             with ui.row().classes('absolute top-5 right-5 items-center'):
                 ui.button('🏆', on_click=show_leaderboard, color='yellow').classes('text-2xl')
 
             ui.label(T('game_title')).classes('text-5xl font-bold text-red-500 mb-2')
-            score_label = ui.label().classes('text-3xl mb-2').bind_text_from(state, 'score', lambda s: f"{T('score')}: {s}")
-            timer_label = ui.label().classes('text-4xl font-bold mb-4').bind_text_from(state, 'timer_value', lambda t: f"{T('time_left')}: {t}{T('seconds')}")
+            score_label = ui.label(f"{T('score')}: {state['score']}").classes('text-3xl mb-2')
+            timer_label = ui.label(f"{T('time_left')}: {state['timer_value']}{T('seconds')}").classes('text-4xl font-bold mb-4')
 
             with ui.card().classes('w-[350px] h-[500px] p-0 overflow-hidden relative'):
                 if state['deck']:
@@ -487,12 +501,10 @@ def main_page():
 
     def handle_timer_tick():
         state['timer_value'] -= 1
-        if state['timer_value'] < 0:
-            state['timer_value'] = 0
-            if state['game_mode'] == 'time_attack':
-                game_over()
-            elif state['game_mode'] == 'survival':
-                 game_over()
+        if state['timer_value'] <= 0:
+            game_over()
+        else:
+            update_view() # This will re-render the game view, updating the timer label
 
     def show_leaderboard():
         game_timer.deactivate()
@@ -521,5 +533,8 @@ def main_page():
 app.add_static_files('/app', str(APP_DIR))
 
 if __name__ in {"__main__", "__mp_main__"}:
+    # NOTE: 실제 프로덕션 환경에서는 이 비밀 키를 꼭 변경해야 해요!
+    # 터미널에서 python3 -c "import secrets; print(secrets.token_hex(32))" 명령어로 안전한 키를 생성할 수 있어요.
+    storage_secret = os.environ.get('STORAGE_SECRET', 'THIS_IS_A_SECRET_KEY_CHANGE_ME')
     port = int(os.environ.get('PORT', 8080))
-    ui.run(title='이게 김치일까?', language='ko', reload=False, port=port, host='0.0.0.0')
+    ui.run(title='이게 김치일까?', language='ko', reload=False, port=port, host='0.0.0.0', storage_secret=storage_secret)
