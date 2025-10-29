@@ -168,11 +168,8 @@ def main_page():
                 if state['deck']:
                     current_card = state['deck'][0]
                     ui.image(current_card['url']).classes('w-full h-full object-cover')
-                    with ui.card_section().classes('absolute bottom-0 w-full bg-black/40'):
-                        ui.label(current_card['name']).classes('text-white text-3xl text-center w-full')
                 else:
                     ui.spinner(size='lg').classes('w-full h-full')
-
             ui.label('카드를 보고 아래 버튼을 눌러주세요!').classes('text-lg text-gray-400 mt-4')
             
             with ui.row():
