@@ -16,35 +16,338 @@ NON_KIMCHI_DIR = APP_DIR / 'src' / 'assets' / '노김치'
 # --- 2. 다국어 지원 (i18n) ---
 
 TRANSLATIONS = {
+
     'ko': {
+
         'game_title': '이게 김치일까?',
+
         'game_subtitle': '플레이할 게임 모드를 선택해주세요!',
+
         'start_survival': '연속해서 맞추기 (서바이벌)',
+
         'start_time_attack': '30초 안에 많이 맞추기 (타임어택)',
+
         'leaderboard': '명예의 전당',
+
         'loading_cards': '카드를 섞는 중...',
+
         'score': '점수',
+
         'time_left': '남은 시간',
+
         'seconds': '초',
+
         'instructions': '카드를 보고 아래 버튼을 눌러주세요!',
+
         'is_kimchi_btn': '김치! 😋',
+
         'not_kimchi_btn': '김치 아님! 🤔',
+
         'game_over': '게임 오버!',
+
         'final_score': '최종 점수',
+
         'this_was': '이건 "{name}" 이었어요!',
+
         'submit_score': '점수 등록',
+
         'enter_nickname': '닉네임을 입력하세요',
+
         'nickname_empty': '닉네임을 입력해주세요!',
+
         'try_again': '다시 하기',
+
         'back_to_menu': '메뉴로 돌아가기',
+
         'no_scores': '아직 등록된 점수가 없어요!',
+
         'rank': '순위',
+
         'nickname': '닉네임',
+
         'survival_tab': '서바이벌',
+
         'time_attack_tab': '타임어택',
+
         'no_images_found': '앗! 이미지 카드를 찾을 수 없어요!',
+
         'check_assets_folder': '`app/src/assets` 폴더가 있는지 확인해주세요.',
+
         'wrong_answer_penalty': '오답! -2점 감점! 😭',
+
+        'how_to_make_kimchi_btn': '김치 만드는 법 🥬',
+
+        'how_to_make_kimchi_title': '김치, 어떻게 만들까?',
+
+        'how_to_make_btn': '{kimchi_name} 만드는 법 🥬',
+
+        'recipe_배추김치': """🥬 배추김치 레시피
+
+📌 재료
+- 배추: 5포기  
+- 무: 2개  
+- 물: 10컵  
+- 굵은 소금: 2컵  
+- 미나리: 800g  
+- 갓: 500g  
+- 쪽파: 800g  
+- 생강: 100g  
+- 마늘: 10통  
+- 새우젓: 4컵  
+- 굴: 2컵  
+- 찹쌀풀: 4컵  
+- 고춧가루: 4컵  
+- 밤: 10개  
+- 통깨: 약간  
+- 소금: 적당량  
+- 설탕: 적당량  
+
+🥣 담그는 방법
+
+1. 배추 손질 및 절이기  
+   - 배추의 겉잎을 떼고 반으로 자른 후, 소금물에 절인다.  
+   - 절인 배추를 깨끗이 씻어 물기를 빼고 밑동을 잘라낸다.
+
+2. 야채 준비  
+   - 무는 4cm 길이로 채 썬다.  
+   - 미나리, 갓, 쪽파는 다듬어서 4cm 길이로 자른다.  
+   - 굴은 소금물에 흔들어 씻은 후 물기를 제거한다.
+
+3. 양념 만들기  
+   - 고춧가루는 따뜻한 물에 불려둔다.  
+   - 새우젓은 곱게 다지고, 마늘과 생강도 곱게 다진다.
+
+4. 속재료 섞기  
+   - 무채에 불린 고춧가루를 넣고 고루 버무린다.  
+   - 미나리, 쪽파, 갓, 다진 마늘과 생강, 새우젓, 설탕을 넣고 섞는다.  
+   - 소금으로 간을 맞추고 굴을 넣어 가볍게 버무린다.
+
+5. 배추에 양념 넣기  
+   - 절인 배추 잎 사이사이에 양념소를 넣고 겉잎으로 싸준다.
+
+6. 항아리에 담기  
+   - 양념을 넣은 배추를 항아리에 꼭꼭 눌러 담는다.  
+   - 우거지를 위에 덮고 돌로 눌러준다.""",
+
+        'recipe_깍두기': """🥬 깍두기 레시피
+
+📌 재료
+- 무: 2개  
+- 굴: 1컵 반  
+- 고춧가루: 1컵  
+- 새우젓: 반 컵  
+- 쪽파: 100g  
+- 마늘: 4통  
+- 생강: 30g  
+- 소금: 약간  
+- 통깨: 약간  
+
+🥣 담그는 방법
+1. 무는 2cm 크기의 네모로 썬다.  
+2. 굴은 엷은 소금물에 씻어 자게미를 제거한 후 물기를 뺀다.  
+3. 고춧가루는 따뜻한 물에 불린다.  
+4. 쪽파는 깨끗이 씻어 2.5cm 길이로 썰고, 새우젓은 곱게 다진다.  
+   마늘과 생강도 곱게 다져 놓는다.  
+5. 무에 불린 고춧가루를 넣고 고루 버무려 물을 들인다.  
+6. 갓, 파, 생강, 마늘, 통깨, 새우젓, 소금을 넣어 버무린다.  
+7. 마지막으로 굴을 넣어 다시 버무린 후 항아리에 담는다.""",
+
+        'recipe_파김치': """🥬 파김치 레시피
+
+📌 재료
+- 쪽파: 2단  
+- 멸치젓: 1컵  
+- 고춧가루: 1컵  
+- 마늘: 2통  
+- 생강: 1톨  
+- 설탕: 1큰술  
+- 통깨: 2큰술  
+- 소금: 약간  
+
+🥣 담그는 방법
+1. 쪽파는 다듬어 씻은 후 물기를 뺀다.  
+2. 멸치젓에 같은 양의 물을 넣어 끓인 후 면보에 걸러 국물을 낸다.  
+3. 파에 멸치젓국을 부어 1시간 정도 절인 뒤 국물을 따른다.  
+4. 따라낸 멸치젓국에 고춧가루, 마늘, 생강, 찹쌀풀, 소금을 넣어 양념을 만든다.  
+5. 절여진 파에 고춧가루, 마늘, 생강, 설탕, 통깨를 넣어 버무린 후 소금으로 간을 맞춘다.  
+6. 파를 몇 가닥씩 모아 묶어 항아리에 차곡차곡 담는다.""",
+
+        'recipe_백김치': """🥬 백김치 레시피
+
+📌 재료
+- 배추: 5포기  
+- 무: 1개  
+- 물: 10컵  
+- 굵은 소금: 2컵  
+- 미나리: ½단  
+- 갓: ½단  
+- 실파: ½단  
+- 배: 1개  
+- 밤: 5개  
+- 대추: 5개  
+- 실고추: 약간  
+- 표고버섯: 5장  
+- 석이버섯: 5장  
+- 잣: 2큰술  
+- 소금: 2큰술  
+- 설탕: 1컵  
+- 대파: 3통  
+- 마늘: 1톨  
+- 국물용 배: 1개  
+- 국물용 물: 5컵  
+- 국물용 소금: ½컵  
+
+🥣 담그는 방법
+1. 배추를 반으로 자르고 소금물에 5~6시간 절인 후 씻어 밑동을 자른다.  
+2. 무는 4cm 길이로 채 썬다.  
+3. 실파, 미나리, 갓은 4cm로 썬다.  
+4. 배, 밤, 대추는 채 썰고 실고추는 짧게 자른다.  
+5. 표고와 석이버섯은 불려 채 썬다.  
+6. 대파는 어슷썰고 마늘과 생강은 다진다.  
+7. 무, 배, 밤, 대추채에 실고추를 넣어 버무린 후 미나리, 실파, 갓, 버섯류, 잣, 대파, 마늘, 생강, 설탕을 넣고 소금으로 간한다.  
+8. 배춧잎 사이에 속을 넣고 겉잎으로 싸서 항아리에 담는다.  
+9. 배즙과 물, 소금을 섞어 국물을 만들어 붓는다.""",
+
+        'recipe_총각김치': """🥬 총각김치 레시피
+
+📌 재료
+- 알타리무: 2단  
+- 굵은 소금: 1컵  
+- 고춧가루: 1컵  
+- 멸치젓: ½컵  
+- 새우젓: ½컵  
+- 찹쌀풀: 1컵  
+- 대파: 2대  
+- 마늘: 3통  
+- 생강: 2톨  
+- 설탕: 1큰술  
+
+🥣 담그는 방법
+1. 총각무는 잔털을 떼고 다듬어 씻은 후 소금을 뿌려 2시간 절인다.  
+2. 절인 무를 씻어 물기를 뺀다.  
+3. 대파는 어슷썰고, 마늘과 생강은 다진다.  
+4. 멸치젓에 같은 양의 물을 넣고 끓여 체에 거른다.  
+5. 새우젓은 다지고, 물 1컵에 찹쌀가루 1큰술을 넣어 끓인다.  
+6. 멸치젓국에 고춧가루를 섞고, 대파·마늘·생강·새우젓·설탕을 넣는다.  
+7. 절여진 무에 양념을 넣어 버무리고 몇 가닥씩 모아 항아리에 담는다.""",
+
+        'recipe_갓김치': """🥬 갓김치 레시피
+
+📌 재료
+- 갓: 1kg  
+- 실파: 500g  
+- 굵은 소금: ½컵  
+- 고춧가루: 2컵  
+- 멸치젓: 1컵 반  
+- 마늘: 2통  
+- 생강: 1통  
+- 통깨: 2큰술  
+- 실고추: 약간  
+
+🥣 담그는 방법
+1. 갓은 줄기가 연한 것으로 골라 다듬고 소금을 뿌려 30분 절인다.  
+2. 실파를 다듬어 씻고 마늘과 생강은 다진다.  
+3. 멸치젓에 같은 양의 물을 넣어 끓인 후 걸러 국물을 만든다.  
+4. 그 국물에 고춧가루를 불려 마늘, 생강, 통깨, 실고추를 넣어 양념을 만든다.  
+5. 절인 갓을 씻어 물기를 뺀 뒤 양념으로 버무려 항아리에 담는다.  
+6. 우거지를 덮고 돌로 눌러 뚜껑을 덮는다.""",
+
+        'recipe_부추김치': """🥬 부추김치 레시피
+
+📌 재료
+- 부추: 1kg  
+- 멸치젓: ½컵  
+- 고춧가루: 1컵  
+- 마늘: 1통  
+- 생강: 1톨  
+- 설탕: 1큰술  
+- 통깨: 약간  
+
+🥣 담그는 방법
+1. 부추는 깨끗이 다듬어 씻어 물기를 뺀다.  
+2. 부추를 반으로 자르고 달인 멸치젓국을 켜켜로 뿌려 20분 절인다.  
+3. 중간에 위아래를 뒤집어준다.  
+4. 마늘과 생강은 다지고, 불린 고춧가루에 다진 마늘, 생강, 설탕, 통깨를 섞는다.  
+5. 절인 부추에 양념을 넣어 살살 버무린 후 항아리에 담는다.""",
+        'recipe_나박김치': """🥬 나박김치 레시피
+
+📌 재료
+- 배추: 1포기  
+- 무: 1개  
+- 대파: 1대  
+- 마늘: 5쪽  
+- 생강: 1쪽  
+- 붉은 고추: 2개  
+- 풋고추: 2개  
+- 소금: 3큰술  
+- 설탕: 1큰술  
+- 물: 10컵  
+
+🥣 담그는 방법
+1. 배추는 먹기 좋은 크기로 썰고 무는 얇게 썬다.  
+2. 대파는 어슷썰고 고추는 어슷하게 썬다.  
+3. 마늘과 생강은 얇게 저민다.  
+4. 물에 소금과 설탕을 넣고 녹여 김치국물을 만든다.  
+5. 준비한 재료를 김치통에 넣고 국물을 붓는다.  
+6. 상온에서 하루 숙성시킨 뒤 냉장 보관한다.""",
+        'recipe_무생채': """🥬 무생채 레시피
+
+📌 재료
+- 무: 1개  
+- 고춧가루: 3큰술  
+- 식초: 2큰술  
+- 설탕: 1큰술  
+- 소금: 1작은술  
+- 다진 마늘: 1큰술  
+- 통깨: 약간  
+
+🥣 담그는 방법
+1. 무는 껍질을 벗기고 가늘게 채 썬다.  
+2. 채 썬 무에 소금을 넣고 10분 정도 절인다.  
+3. 절인 무의 물기를 가볍게 짜고, 고춧가루, 식초, 설탕, 다진 마늘을 넣고 버무린다.  
+4. 통깨를 넣고 마지막으로 간을 맞춘다.  
+5. 바로 먹거나 하루 정도 냉장 숙성해도 좋다.""",
+        'recipe_열무김치': """🥬 열무김치 레시피
+
+📌 재료
+- 열무: 2단  
+- 굵은 소금: 1컵  
+- 고춧가루: 1컵  
+- 새우젓: 4큰술  
+- 마늘: 5쪽  
+- 생강: 1쪽  
+- 쪽파: 100g  
+- 설탕: 1큰술  
+- 통깨: 약간  
+
+🥣 담그는 방법
+1. 열무는 깨끗이 다듬어 씻고, 소금을 뿌려 1시간 정도 절인다.  
+2. 절인 열무를 씻어 물기를 뺀다.  
+3. 마늘과 생강을 다지고, 새우젓, 고춧가루, 설탕을 섞어 양념을 만든다.  
+4. 쪽파를 썰어 넣고 열무와 함께 버무린다.  
+5. 항아리나 김치통에 담고 실온에서 하루 숙성 후 냉장 보관한다.""",
+        'recipe_오이소박이': """🥬 오이소박이 레시피
+
+📌 재료
+- 오이: 5개  
+- 굵은 소금: 3큰술  
+- 부추: 200g  
+- 당근: ½개  
+- 쪽파: 50g  
+- 마늘: 5쪽  
+- 생강: 1쪽  
+- 고춧가루: 5큰술  
+- 새우젓: 2큰술  
+- 설탕: 1큰술  
+- 통깨: 약간  
+
+🥣 담그는 방법
+1. 오이는 깨끗이 씻어 길게 4등분으로 칼집을 낸다.  
+2. 굵은 소금을 뿌려 30분 정도 절인 후 헹구어 물기를 뺀다.  
+3. 부추와 당근, 쪽파는 4cm 길이로 썬다.  
+4. 마늘과 생강을 다지고, 고춧가루, 새우젓, 설탕을 섞어 양념을 만든다.  
+5. 부추, 당근, 쪽파를 양념에 버무린 후 오이 속에 채워 넣는다.  
+6. 항아리나 김치통에 담아 하루 숙성 후 냉장 보관한다.""",
     },
     'en': {
         'game_title': 'Is This Kimchi?',
@@ -52,7 +355,7 @@ TRANSLATIONS = {
         'start_survival': 'Endless Mode (Survival)',
         'start_time_attack': '30-Second Challenge (Time Attack)',
         'leaderboard': 'Leaderboard',
-        'loading_cards': 'Shuffling cards...',
+        'loading_cards': 'Shuffling cards...', 
         'score': 'Score',
         'time_left': 'Time Left',
         'seconds': 's',
@@ -75,11 +378,277 @@ TRANSLATIONS = {
         'no_images_found': 'Oops! Image cards not found!',
         'check_assets_folder': 'Please check if the `app/src/assets` folder exists.',
         'wrong_answer_penalty': 'Wrong! -2 points! 😭',
+        'how_to_make_kimchi_title': 'How to Make Kimchi',
+        'how_to_make_btn': 'How to make {kimchi_name} 🥬',
+        'recipe_배추김치': """🇺🇸 Baechu Kimchi Recipe (Napa Cabbage Kimchi)
+
+📌 Ingredients
+- Napa cabbage: 5 heads  
+- Korean radish: 2 pieces  
+- Water: 10 cups  
+- Coarse salt: 2 cups  
+- Water dropwort (Minari): 800g  
+- Mustard leaves: 500g  
+- Green onions: 800g  
+- Ginger: 100g  
+- Garlic: 10 bulbs  
+- Salted shrimp (Saeujeot): 4 cups  
+- Oysters: 2 cups  
+- Glutinous rice paste: 4 cups  
+- Red pepper powder: 4 cups  
+- Chestnuts: 10  
+- Sesame seeds: a little  
+- Salt: to taste  
+- Sugar: to taste  
+
+🥣 Instructions
+
+1. Prepare and brine the cabbage  
+   - Remove the outer leaves of the cabbage, cut in half, and soak in salt water.  
+   - Rinse the cabbage thoroughly, drain the water, and cut off the root ends.
+
+2. Prepare the vegetables  
+   - Julienne the radish into 4 cm long strips.  
+   - Trim and cut water dropwort, mustard leaves, and green onions into 4 cm lengths.  
+   - Rinse the oysters in salt water and drain.
+
+3. Make the seasoning  
+   - Soak the red pepper powder in warm water.  
+   - Mince the salted shrimp, garlic, and ginger.
+
+4. Mix the stuffing ingredients  
+   - Mix the soaked red pepper powder with the julienned radish.  
+   - Add water dropwort, green onions, mustard leaves, minced garlic and ginger, salted shrimp, and sugar.  
+   - Season with salt and gently mix in the oysters.
+
+5. Stuff the cabbage  
+   - Place the seasoning between each layer of cabbage leaves, and wrap the cabbage with its outer leaves.
+
+6. Ferment the kimchi  
+   - Pack the stuffed cabbages tightly into a container or jar.  
+   - Cover with cabbage leaves (ugeoji), press down with a weight or stone.""",
+
+        'recipe_깍두기': """🇺🇸 Kkakdugi (Cubed Radish Kimchi)
+
+📌 Ingredients
+- Radish: 2 pieces  
+- Oysters: 1½ cups  
+- Red pepper powder: 1 cup  
+- Salted shrimp: ½ cup  
+- Green onions: 100g  
+- Garlic: 4 cloves  
+- Ginger: 30g  
+- Salt: to taste  
+- Sesame seeds: a little  
+
+🥣 Instructions
+1. Cut the radish into 2cm cubes.  
+2. Rinse the oysters lightly in salt water, remove impurities, and drain.  
+3. Soak red pepper powder in warm water.  
+4. Chop the green onions into 2.5cm pieces. Mince salted shrimp, garlic, and ginger.  
+5. Mix the soaked red pepper powder with the cubed radish evenly.  
+6. Add green onions, garlic, ginger, sesame seeds, salted shrimp, and salt, then mix well.  
+7. Add oysters last, mix gently, and store in a jar.""",
+
+        'recipe_파김치': """🇺🇸 Pa Kimchi (Green Onion Kimchi)
+
+📌 Ingredients
+- Green onions: 2 bunches  
+- Anchovy sauce: 1 cup  
+- Red pepper powder: 1 cup  
+- Garlic: 2 cloves  
+- Ginger: 1 piece  
+- Sugar: 1 tbsp  
+- Sesame seeds: 2 tbsp  
+- Salt: to taste  
+
+🥣 Instructions
+1. Trim and wash green onions, then drain.  
+2. Boil anchovy sauce with equal water and strain through cloth.  
+3. Pour over green onions to brine for 1 hour, then drain.  
+4. Mix anchovy broth with red pepper powder, garlic, ginger, and salt to make seasoning.  
+5. Mix brined onions with seasoning, sugar, and sesame seeds.  
+6. Tie in small bundles and pack in a jar.""",
+
+        'recipe_백김치': """🇺🇸 Baek Kimchi (White Kimchi)
+
+📌 Ingredients
+- Napa cabbage: 5 heads  
+- Radish: 1  
+- Water: 10 cups  
+- Coarse salt: 2 cups  
+- Water dropwort: ½ bunch  
+- Mustard leaves: ½ bunch  
+- Green onions: ½ bunch  
+- Pear: 1  
+- Chestnuts: 5  
+- Jujubes: 5  
+- Red chili threads: a little  
+- Shiitake mushrooms: 5  
+- Black mushrooms: 5  
+- Pine nuts: 2 tbsp  
+- Salt: 2 tbsp  
+- Sugar: 1 cup  
+- Leeks: 3 stalks  
+- Garlic: 1 clove  
+- For brine: 1 pear, 5 cups water, ½ cup salt  
+
+🥣 Instructions
+1. Cut cabbage in half and brine in salt water for 5–6 hours. Rinse and trim roots.  
+2. Slice radish into 4cm strips.  
+3. Cut greens into 4cm lengths.  
+4. Julienne pear, chestnuts, and jujubes.  
+5. Soak and slice mushrooms.  
+6. Slice leeks diagonally; mince garlic and ginger.  
+7. Mix all filling ingredients with salt and sugar.  
+8. Stuff between cabbage leaves and wrap with outer leaves.  
+9. Combine pear juice, water, and salt for brine and pour over kimchi.""",
+
+        'recipe_총각김치': """🇺🇸 Chonggak Kimchi (Young Radish Kimchi)
+
+📌 Ingredients
+- Young radishes: 2 bunches  
+- Coarse salt: 1 cup  
+- Red pepper powder: 1 cup  
+- Anchovy sauce: ½ cup  
+- Salted shrimp: ½ cup  
+- Glutinous rice paste: 1 cup  
+- Leeks: 2  
+- Garlic: 3 cloves  
+- Ginger: 2 pieces  
+- Sugar: 1 tbsp  
+
+🥣 Instructions
+1. Clean and trim young radishes, remove root hairs, and brine with salt for 2 hours.  
+2. Rinse and drain.  
+3. Slice leeks; mince garlic and ginger.  
+4. Boil anchovy sauce with equal water and strain.  
+5. Mince salted shrimp; make glutinous rice paste.  
+6. Mix anchovy broth with red pepper powder, garlic, ginger, shrimp, and sugar.  
+7. Combine with radishes, roll into small bundles, and store in a jar.""",
+
+        'recipe_갓김치': """🇺🇸 Gat Kimchi (Mustard Leaf Kimchi)
+
+📌 Ingredients
+- Mustard leaves: 1kg  
+- Green onions: 500g  
+- Coarse salt: ½ cup  
+- Red pepper powder: 2 cups  
+- Anchovy sauce: 1½ cups  
+- Garlic: 2 cloves  
+- Ginger: 1 piece  
+- Sesame seeds: 2 tbsp  
+- Red chili threads: a little  
+
+🥣 Instructions
+1. Trim mustard leaves, sprinkle salt, and brine for 30 minutes.  
+2. Prepare and wash green onions; mince garlic and ginger.  
+3. Boil anchovy sauce with equal water, strain, and soak red pepper powder in it.  
+4. Add garlic, ginger, sesame seeds, and red chili threads to make seasoning.  
+5. Rinse mustard leaves, drain, mix with seasoning, and pack in a jar.  
+6. Cover with outer leaves, press down with a stone, and close the lid.""",
+
+        'recipe_부추김치': """🇺🇸 Buchu Kimchi (Chive Kimchi)
+
+📌 Ingredients
+- Chives: 1kg  
+- Anchovy sauce: ½ cup  
+- Red pepper powder: 1 cup  
+- Garlic: 1 bulb  
+- Ginger: 1 piece  
+- Sugar: 1 tbsp  
+- Sesame seeds: a little  
+
+🥣 Instructions
+1. Clean and drain chives.  
+2. Cut in half, layer with boiled anchovy broth, and brine for 20 minutes.  
+3. Turn occasionally while brining.  
+4. Mince garlic and ginger. Mix with soaked red pepper powder, sugar, and sesame seeds.  
+5. Gently mix the seasoned paste with chives and pack into a jar to ferment.""",
+        'recipe_나박김치': """🇺🇸 Nabak Kimchi (Water Kimchi with Radish and Cabbage)
+
+📌 Ingredients
+- Napa cabbage: 1 head  
+- Radish: 1  
+- Green onion: 1 stalk  
+- Garlic: 5 cloves  
+- Ginger: 1 piece  
+- Red chili peppers: 2  
+- Green chili peppers: 2  
+- Salt: 3 tbsp  
+- Sugar: 1 tbsp  
+- Water: 10 cups  
+
+🥣 Instructions
+1. Cut cabbage into bite-size pieces and slice radish thinly.  
+2. Slice green onions and peppers diagonally.  
+3. Slice garlic and ginger thinly.  
+4. Dissolve salt and sugar in water to make brine.  
+5. Combine all ingredients in a jar and pour in the brine.  
+6. Ferment at room temperature for a day, then refrigerate.""",
+        'recipe_무생채': """🇺🇸 Mu Saengchae (Seasoned Radish Salad)
+
+📌 Ingredients
+- Radish: 1  
+- Red pepper powder: 3 tbsp  
+- Vinegar: 2 tbsp  
+- Sugar: 1 tbsp  
+- Salt: 1 tsp  
+- Minced garlic: 1 tbsp  
+- Sesame seeds: a little  
+
+🥣 Instructions
+1. Peel and julienne the radish thinly.  
+2. Sprinkle salt and let sit for 10 minutes.  
+3. Squeeze out excess water and mix with red pepper powder, vinegar, sugar, and garlic.  
+4. Add sesame seeds and adjust seasoning.  
+5. Serve fresh or chill for a day before serving.""",
+        'recipe_열무김치': """🇺🇸 Yeolmu Kimchi (Young Summer Radish Kimchi)
+
+📌 Ingredients
+- Young radish greens: 2 bunches  
+- Coarse salt: 1 cup  
+- Red pepper powder: 1 cup  
+- Salted shrimp: 4 tbsp  
+- Garlic: 5 cloves  
+- Ginger: 1 piece  
+- Green onions: 100g  
+- Sugar: 1 tbsp  
+- Sesame seeds: a little  
+
+🥣 Instructions
+1. Clean and trim young radish greens. Sprinkle salt and let sit for 1 hour.  
+2. Rinse and drain.  
+3. Mince garlic and ginger, then mix with red pepper powder, salted shrimp, and sugar.  
+4. Add chopped green onions and mix with the radish greens.  
+5. Store in a jar, ferment for a day at room temperature, then refrigerate.""",
+        'recipe_오이소박이': """🇺🇸 Oi Sobagi (Stuffed Cucumber Kimchi)
+
+📌 Ingredients
+- Cucumbers: 5  
+- Coarse salt: 3 tbsp  
+- Chives: 200g  
+- Carrot: ½  
+- Green onions: 50g  
+- Garlic: 5 cloves  
+- Ginger: 1 piece  
+- Red pepper powder: 5 tbsp  
+- Salted shrimp: 2 tbsp  
+- Sugar: 1 tbsp  
+- Sesame seeds: a little  
+
+🥣 Instructions
+1. Wash cucumbers and make 4 lengthwise slits, keeping one end intact.  
+2. Sprinkle salt and brine for 30 minutes, then rinse and drain.  
+3. Cut chives, carrot, and green onions into 4cm pieces.  
+4. Mince garlic and ginger, then mix with red pepper powder, salted shrimp, and sugar.  
+5. Combine the vegetables with seasoning and stuff into the cucumbers.  
+6. Store in a container and ferment for one day before refrigerating.""",
     }
+
 }
 
-KIMCHI_DATA = {
-    '배추김치': {
+KIMCHI_DATA = {    '배추김치': {
         'en_name': 'Baechu Kimchi',
         'ko_desc': '한국의 가장 대표적인 김치로, 소금에 절인 배추에 무, 파, 고춧가루, 마늘, 생강 등의 양념을 버무려 만듭니다.',
         'en_desc': 'The most representative kimchi in Korea, made by mixing salted napa cabbage with seasonings such as radish, green onions, red chili powder, garlic, and ginger.',
@@ -328,8 +897,18 @@ def main_page():
 
     view_container = ui.column().classes('w-full items-center justify-center')
     
-    # 타이머는 게임 화면이 만들어질 때 설정됩니다.
     game_timer = ui.timer(1.0, lambda: None, active=False)
+
+    async def set_language(lang: str):
+        state['language'] = lang
+        await ui.run_javascript(f'localStorage.setItem("language", "{lang}")')
+        update_view()
+
+    async def load_language():
+        lang = await ui.run_javascript('localStorage.getItem("language")')
+        if lang in ['ko', 'en']:
+            state['language'] = lang
+        update_view()
 
     def build_menu():
         with view_container.classes('gap-4 text-center'):
@@ -407,6 +986,17 @@ def main_page():
                 ui.button(T('submit_score'), on_click=lambda: handle_score_submit(nickname_input.value, state['game_mode'])).classes('text-lg')
             
             ui.button(T('try_again'), on_click=lambda: start_game(state['game_mode'])).classes('px-7 py-2 text-lg')
+            if img and img['is_kimchi']:
+                kimchi_name_ko = img['name']
+                
+                # 현재 언어에 맞는 김치 이름을 가져옴
+                if state['language'] == 'en':
+                    kimchi_display_name = KIMCHI_DATA.get(kimchi_name_ko, {}).get('en_name', kimchi_name_ko)
+                else:
+                    kimchi_display_name = kimchi_name_ko
+
+                button_text = T('how_to_make_btn').format(kimchi_name=kimchi_display_name)
+                ui.button(button_text, on_click=lambda k=kimchi_name_ko, l=state['language']: ui.navigate.to(f'/how-to-make-kimchi/{k}?lang={l}')).classes('px-7 py-2 text-lg mt-2 bg-green-500')
             ui.button(T('back_to_menu'), on_click=show_menu).classes('px-7 py-2 text-lg mt-2')
 
     def build_leaderboard():
@@ -524,11 +1114,56 @@ def main_page():
         await asyncio.sleep(0.1)
         show_leaderboard()
         
+    ui.timer(0.1, load_language, once=True)
+
+@ui.page('/how-to-make-kimchi/{kimchi_name}')
+def how_to_make_kimchi_page(kimchi_name: str, lang: str = 'ko'):
+    # URL에서 받은 lang 파라미터로 초기 언어 설정
+    state = {'language': lang}
+
+    def T(key: str) -> str:
+        return TRANSLATIONS[state['language']].get(key, key)
+        
     def set_language(lang: str):
         state['language'] = lang
-        update_view()
+        # We need to refresh the page content to show the new language
+        # A simple way is to just re-run the function that builds the page content
+        page_content.clear()
+        build_recipe_page()
 
-    update_view()
+    ui.add_head_html('''
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+            body {
+                font-family: 'Noto Sans KR', sans-serif;
+                background-color: #1e1e1e;
+                color: #e0e0e0;
+            }
+        </style>
+    ''')
+    ui.dark_mode().enable()
+
+    page_content = ui.column().classes('w-full items-center justify-center p-8')
+
+    def build_recipe_page():
+        with page_content:
+            with ui.row().classes('absolute top-5 right-5'):
+                ui.button('🇰🇷', on_click=lambda: set_language('ko'), color='white' if state['language'] != 'ko' else 'blue').props('flat')
+                ui.button('🇺🇸', on_click=lambda: set_language('en'), color='white' if state['language'] != 'en' else 'blue').props('flat')
+
+            kimchi_display_name = KIMCHI_DATA.get(kimchi_name, {}).get('en_name' if state['language'] == 'en' else 'ko_name', kimchi_name)
+            ui.label(T('how_to_make_kimchi_title').format(kimchi_name=kimchi_display_name)).classes('text-5xl font-bold text-green-500 mb-8')
+            
+            recipe_key = f"recipe_{kimchi_name}"
+            recipe_content = T(recipe_key)
+
+            with ui.card().classes('w-full max-w-4xl bg-white/5'):
+                with ui.card_section():
+                    ui.markdown(recipe_content).classes('text-gray-300 text-left')
+
+            ui.button(T('back_to_menu'), on_click=lambda: ui.navigate.to('/')).classes('mt-8 px-7 py-2 text-lg')
+            
+    build_recipe_page()
 
 app.add_static_files('/app', str(APP_DIR))
 
