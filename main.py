@@ -291,7 +291,7 @@ def load_scores():
         return DEFAULT_SCORES
 
 def save_scores(scores):
-    SCORE_FILE.parent.mkdir(parents=True, exist_ok=True) # Ensure directory exists
+    SCORE_FILE.parent.mkdir(parents=True, exist_ok=True) 
     with open(SCORE_FILE, 'w', encoding='utf-8') as f:
         json.dump(scores, f, indent=2, ensure_ascii=False)
 
@@ -315,19 +315,16 @@ def submit_score(nickname, score, game_mode):
 
 @ui.page('/')
 async def main_page():
-    # 각 사용자 세션(브라우저 탭)을 위한 로컬 상태
     state = {
         'view': 'menu',
-        'language': 'ko', # 브라우저 스토리지에서 로드 시 덮어쓰여짐
+        'language': 'ko', # 브라우저 스토리지에서 로드 시 업데이트
         'game_mode': None,
         'deck': [],
         'score': 0,
-        'timer_value': 0, # 초기값은 0, 게임 시작 시 설정됨
+        'timer_value': 0, 
         'game_over_image': None,
     }
 
-    # UI 엘리먼트들을 위한 변수들 (build_game/build_game_over 에서 할당되고 다른 함수에서 업데이트됨)
-    # nonlocal 을 통해 이 변수들에 접근 및 할당이 가능하게 함
     game_card_ui_element = None
     score_label_ui_element = None
     timer_label_ui_element = None
@@ -379,7 +376,7 @@ async def main_page():
     async def set_language(lang: str):
         state['language'] = lang
         await app.storage.browser.set('language', lang)
-        update_view() # 언어 변경 후 UI 전체를 다시 그림
+        update_view() # 언어 변경 후 UI 전체 다시 그리기
 
     def build_menu():
         view_container.clear()
@@ -396,19 +393,19 @@ async def main_page():
 
     def build_game():
         nonlocal game_card_ui_element, score_label_ui_element, timer_label_ui_element
-        view_container.clear() # 이전 뷰의 모든 콘텐츠 제거
+        view_container.clear() # 이전 뷰 클리어
         with view_container.classes('w-full items-center justify-center gap-2'):
             with ui.row().classes('absolute top-5 right-5 items-center'):
                 ui.button('🏆', on_click=show_leaderboard, color='yellow').classes('text-2xl')
 
             ui.label(T('game_title')).classes('text-5xl font-bold text-red-500 mb-2')
-            # 레이블 엘리먼트 할당 (생성)
+            # 레이블 엘리먼트 생성
             score_label_ui_element = ui.label(f"{T('score')}: {state['score']}").classes('text-3xl mb-2')
             timer_label_ui_element = ui.label(f"{T('time_left')}: {state['timer_value']}{T('seconds')}").classes('text-4xl font-bold mb-4')
 
             with ui.card().classes('w-[350px] h-[500px] p-0 overflow-hidden relative'):
                 if state['deck']:
-                    # 이미지 엘리먼트 할당 (생성)
+                    # 이미지 엘리먼트 생성
                     game_card_ui_element = ui.image(state['deck'][0]['url']).classes('w-full h-full object-cover')
                 else:
                     # 덱이 비었을 경우 스피너 표시
@@ -452,19 +449,11 @@ async def main_page():
         if state['deck'] and game_card_ui_element:
             if isinstance(game_card_ui_element, ui.image): # 현재 엘리먼트가 ui.image 일 경우
                 game_card_ui_element.set_source(state['deck'][0]['url']) # type: ignore
-            else: # 스피너였다면, 이미지로 교체
-                # 스피너를 삭제하고 새로운 이미지 엘리먼트를 생성 (view_container 내에서)
-                # 이 부분은 build_game이 다시 호출되지 않는 이상 복잡해진다.
-                # 간단하게는 view_container.clear() 후 build_game()을 호출하는 것이 더 안정적일 수 있음.
-                # 하지만 여기서는 개별 업데이트를 시도하므로, game_card_ui_element가 항상 ui.image임을 가정.
-                # 만약 game_card_ui_element가 스피너라면, 여기서 이미지를 직접 덮어쓸 수 없음.
-                pass # 실제로는 이 else 블록에 도달하지 않아야 함, game_card_ui_element는 항상 ui.image여야 함.
             
         # 서바이벌 모드에서 타이머값 변경 시 UI 업데이트
         if state['game_mode'] == 'survival' and timer_label_ui_element:
             timer_label_ui_element.text = f"{T('time_left')}: {state['timer_value']}{T('seconds')}"
 
-        # 변경된 UI 엘리먼트들을 NiceGUI에 업데이트하라고 알림
         await ui.update(score_label_ui_element, timer_label_ui_element, game_card_ui_element)
 
     async def game_over():
@@ -479,7 +468,7 @@ async def main_page():
         img = state['game_over_image']
         with view_container.classes('gap-4 text-center'):
             ui.label(T('game_over')).classes('text-6xl font-bold text-red-600')
-            ui.label(f"{T('final_score')}: {state['score']}").classes('text-4xl') # 'points' 제거. T 함수에 없었음. (원래 내용 대로)
+            ui.label(f"{T('final_score')}: {state['score']}").classes('text-4xl') 
 
             if img and state['game_mode'] == 'survival': # 서바이벌 모드에서만 오답 이미지 설명
                 with ui.card().classes('w-[350px] h-fit'):
@@ -506,7 +495,7 @@ async def main_page():
             if img and img['is_kimchi']:
                 kimchi_name_ko = img['name']
                 
-                # 현재 언어에 맞는 김치 이름을 가져옴
+                # 현재 언어에 맞는 김치 이름을 가져오기
                 if state['language'] == 'en':
                     kimchi_display_name = KIMCHI_DATA.get(kimchi_name_ko, {}).get('en_name', kimchi_name_ko)
                 else:
@@ -544,7 +533,7 @@ async def main_page():
             ui.button(T('back_to_menu'), on_click=show_menu).classes('mt-4 px-7 py-2 text-lg')
 
     def update_view():
-        """state['view']에 따라 현재 뷰 컨테이너를 지우고 새로운 뷰를 그립니다."""
+        # state['view']에 따라 현재 뷰 컨테이너를 지우고 새로운 뷰를 그리기
         # view_container.clear()는 각 build_xxx 함수에서 호출(혹은 직접 처리)되므로, 여기서 중복 호출하지 않음
         if state['view'] == 'menu': build_menu()
         elif state['view'] == 'game': build_game()
@@ -557,7 +546,7 @@ async def main_page():
             ui.spinner(size='lg') # type: ignore
             ui.label(T('loading_cards')).classes('text-3xl')
         
-        await asyncio.sleep(0.1) # 스피너가 잠시라도 보이도록 딜레이
+        await asyncio.sleep(0.1) # 스피너 보이게 딜레이
         state['game_mode'] = mode
         state['score'] = 0
         state['timer_value'] = 5 if mode == 'survival' else 30 # 게임 모드에 따라 타이머 초기화
@@ -565,7 +554,7 @@ async def main_page():
         state['deck'] = create_shuffled_deck() # 새로운 카드 덱 생성
 
         if not state['deck']:
-            # 이미지 파일을 찾지 못했을 경우 처리
+            # 이미지 파일을 찾지 못했을 경우 
             view_container.clear()
             with view_container:
                 ui.label(T('no_images_found')).classes('text-2xl text-red-500')
@@ -574,7 +563,7 @@ async def main_page():
             return
 
         state['view'] = 'game'
-        update_view() # 게임 뷰 그리기 (여기서 score_label_ui_element 등이 할당됨)
+        update_view() # 게임 뷰 그리기
         game_timer.activate() # 타이머 활성화
 
     async def handle_score_submit(nickname: str):
@@ -582,7 +571,7 @@ async def main_page():
             ui.notify(T('nickname_empty'), color='negative')
             return
         submit_score(nickname, state['score'], state['game_mode'])
-        await asyncio.sleep(0.1) # 점수 저장 중 약간의 딜레이
+        await asyncio.sleep(0.1) # 점수 저장 딜레이
         show_leaderboard()
 
     def show_leaderboard():
@@ -595,11 +584,10 @@ async def main_page():
         state['view'] = 'menu'
         update_view()
 
-    # 페이지 로드 시 초기 뷰 그리기
     update_view()
 
 
-# --- 5. 김치 만드는 법 상세 페이지 ---
+# --- 5. 김치 만드는 법 페이지 ---
 
 @ui.page('/how-to-make-kimchi/{kimchi_name}')
 async def how_to_make_kimchi_page(kimchi_name: str): # lang 파라미터는 제거 (브라우저 스토리지 사용)
@@ -620,7 +608,7 @@ async def how_to_make_kimchi_page(kimchi_name: str): # lang 파라미터는 제�
     async def set_language(lang: str):
         state['language'] = lang
         await app.storage.browser.set('language', lang)
-        page_content.clear() # 컨텐츠를 지우고 다시 그림으로써 언어 변경 적용
+        page_content.clear() # 컨텐츠를 지우고 다시 그려서 언어 변경 적용
         build_recipe_page()
 
     ui.add_head_html('''
@@ -664,7 +652,7 @@ app.add_static_files('/app', str(APP_DIR))
 
 if __name__ in {"__main__", "__mp_main__"}:
     load_dotenv()
-    # 이 프로젝트에서는 .env 파일에서 키를 로드합니다.
+    # .env 파일에서 키를 로드
     storage_secret = os.environ.get('STORAGE_SECRET')
     if not storage_secret:
         raise ValueError("STORAGE_SECRET이 .env 파일에 설정되지 않았습니다!")
