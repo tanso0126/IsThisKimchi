@@ -363,20 +363,6 @@ async def main_page():
     ui.dark_mode().enable()
 
     view_container = ui.column().classes('w-full items-center justify-center')
-    
-    # 브라우저 저장소에서 언어 설정 불러오기 (초기 로드 시 한 번만 실행)
-    stored_lang = await app.storage.browser.get('language')
-    if stored_lang in ['ko', 'en']:
-        state['language'] = stored_lang
-    else:
-        # 최초 접속 시 기본 언어 설정 및 브라우저 스토리지에 저장
-        state['language'] = 'ko'
-        await app.storage.browser.set('language', 'ko')
-
-    async def set_language(lang: str):
-        state['language'] = lang
-        await app.storage.browser.set('language', lang)
-        update_view() # 언어 변경 후 UI 전체 다시 그리기
 
     def build_menu():
         view_container.clear()
