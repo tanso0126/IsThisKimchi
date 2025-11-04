@@ -39,6 +39,10 @@ TRANSLATIONS = {
         'rank': '순위',
         'nickname': '닉네임',
         'survival_tab': '서바이벌',
+        'time_attack_tab': '타임어택',
+        'try_again': '다시 하기',
+        'back_to_menu': '메뉴로 돌아가기',
+        'no_scores': '아직 등록된 점수가 없어요.',
         'how_to_make_kimchi_btn': '김치 만드는 법 🥬',
         'how_to_make_kimchi_title': '김치, 어떻게 만들까?',
         'how_to_make_btn': '{kimchi_name} 만드는 법 🥬',
@@ -77,6 +81,9 @@ TRANSLATIONS = {
         'nickname': 'Nickname',
         'survival_tab': 'Survival',
         'time_attack_tab': 'Time Attack',
+        'try_again': 'Try Again',
+        'back_to_menu': 'Back to Menu',
+        'no_scores': 'No scores yet.',
         'no_images_found': 'Oops! Image cards not found!',
         'check_assets_folder': 'Please check if the `app/src/assets` folder exists.',
         'wrong_answer_penalty': 'Wrong! -2 points! 😭',
@@ -315,13 +322,15 @@ def submit_score(nickname, score, game_mode):
 
 @ui.page('/')
 async def main_page():
+    # 앱의 전역 저장소를 사용하여 상태 관리
+    app.storage.general.setdefault('language', 'ko')
+
     state = {
         'view': 'menu',
-        'language': 'ko', # 브라우저 스토리지에서 로드 시 업데이트
         'game_mode': None,
         'deck': [],
         'score': 0,
-        'timer_value': 0, 
+        'timer_value': 0,
         'game_over_image': None,
     }
 
@@ -330,8 +339,17 @@ async def main_page():
     timer_label_ui_element = None
 
     def T(key: str) -> str:
-        return TRANSLATIONS[state['language']].get(key, key)
+        return TRANSLATIONS[app.storage.general['language']].get(key, key)
 
+    def set_language(lang: str):
+        if lang in ['ko', 'en']:
+            app.storage.general['language'] = lang
+            update_view()
+
+    async def load_language_and_update():
+        # 이 함수는 이제 필요 없지만, 혹시 모를 다른 용도를 위해 남겨둘 수 있습니다.
+        # 현재는 set_language를 통해 상태가 즉시 반영되므로 비워둡니다.
+        pass
     async def handle_timer_tick_callback():
         """게임 타이머 콜백: 시간 감소 및 UI 업데이트."""
         nonlocal timer_label_ui_element
@@ -368,8 +386,8 @@ async def main_page():
         view_container.clear()
         with view_container.classes('gap-4 text-center'):
             with ui.row().classes('absolute top-5 right-5'):
-                ui.button('🇰🇷', on_click=lambda: set_language('ko'), color='white' if state['language'] != 'ko' else 'blue').props('flat') # type: ignore
-                ui.button('🇺🇸', on_click=lambda: set_language('en'), color='white' if state['language'] != 'en' else 'blue').props('flat') # type: ignore
+                ui.button('🇰🇷', on_click=lambda: set_language('ko'), color='white' if app.storage.general['language'] != 'ko' else 'blue').props('flat') # type: ignore
+                ui.button('🇺🇸', on_click=lambda: set_language('en'), color='white' if app.storage.general['language'] != 'en' else 'blue').props('flat') # type: ignore
 
             ui.label(T('game_title')).classes('text-5xl font-bold text-red-500 mb-4')
             ui.label(T('game_subtitle')).classes('text-lg text-gray-400 mb-8')
@@ -440,8 +458,6 @@ async def main_page():
         if state['game_mode'] == 'survival' and timer_label_ui_element:
             timer_label_ui_element.text = f"{T('time_left')}: {state['timer_value']}{T('seconds')}"
 
-        await ui.update(score_label_ui_element, timer_label_ui_element, game_card_ui_element)
-
     async def game_over():
         game_timer.deactivate()
         if state['deck']:
@@ -458,7 +474,7 @@ async def main_page():
 
             if img and state['game_mode'] == 'survival': # 서바이벌 모드에서만 오답 이미지 설명
                 with ui.card().classes('w-[350px] h-fit'):
-                    ui.image(img['url']) # type: ignore
+                    ui.image(img['url'])
                     with ui.card_section():
                         name_key = img['name']
                         is_kimchi = img['is_kimchi']
@@ -466,29 +482,32 @@ async def main_page():
                         data_source = KIMCHI_DATA if is_kimchi else NON_KIMCHI_DATA
                         food_info = data_source.get(name_key, {})
 
-                        display_name = food_info.get('en_name' if state['language'] == 'en' else 'ko_name', name_key)
-                        display_desc = food_info.get('en_desc' if state['language'] == 'en' else 'ko_desc', '')
+                        if app.storage.general['language'] == 'en':
+                            display_name = food_info.get('en_name', name_key)
+                            display_desc = food_info.get('en_desc', '')
+                        else:
+                            display_name = name_key
+                            display_desc = food_info.get('ko_desc', '')
 
                         ui.label(T('this_was').format(name=display_name)).classes('text-2xl font-bold')
                         ui.label(display_desc).classes('text-md mt-2')
 
             with ui.row().classes('items-center'):
-                nickname_input = ui.input(placeholder=T('enter_nickname')).classes('w-48') # type: ignore
-                ui.button(T('submit_score'), on_click=lambda: handle_score_submit(nickname_input.value)).classes('text-lg') # type: ignore
+                nickname_input = ui.input(placeholder=T('enter_nickname')).classes('w-48')
+                ui.button(T('submit_score'), on_click=lambda: handle_score_submit(nickname_input.value)).classes('text-lg')
             
             ui.button(T('try_again'), on_click=lambda: start_game(state['game_mode'])).classes('px-7 py-2 text-lg')
             # 김치 만드는 법 버튼 (김치일 경우에만 표시)
             if img and img['is_kimchi']:
                 kimchi_name_ko = img['name']
                 
-                # 현재 언어에 맞는 김치 이름을 가져오기
-                if state['language'] == 'en':
+                if app.storage.general['language'] == 'en':
                     kimchi_display_name = KIMCHI_DATA.get(kimchi_name_ko, {}).get('en_name', kimchi_name_ko)
                 else:
                     kimchi_display_name = kimchi_name_ko
 
                 button_text = T('how_to_make_btn').format(kimchi_name=kimchi_display_name)
-                ui.button(button_text, on_click=lambda k=kimchi_name_ko: ui.navigate.to(f'/how-to-make-kimchi/{k}')).classes('px-7 py-2 text-lg mt-2 bg-green-500') # type: ignore
+                ui.button(button_text, on_click=lambda k=kimchi_name_ko: ui.navigate.to(f'/how-to-make-kimchi/{k}')).classes('px-7 py-2 text-lg mt-2 bg-green-500')
             ui.button(T('back_to_menu'), on_click=show_menu).classes('px-7 py-2 text-lg mt-2')
 
     def build_leaderboard():
@@ -576,25 +595,16 @@ async def main_page():
 # --- 5. 김치 만드는 법 페이지 ---
 
 @ui.page('/how-to-make-kimchi/{kimchi_name}')
-async def how_to_make_kimchi_page(kimchi_name: str): # lang 파라미터는 제거 (브라우저 스토리지 사용)
-    # 각 사용자 세션(브라우저 탭)을 위한 로컬 상태
-    state = {'language': 'ko'} # 기본값 'ko', 브라우저 스토리지에서 로드
-
-    # 브라우저 스토리지에서 언어 설정 불러오기
-    stored_lang = await app.storage.browser.get('language')
-    if stored_lang in ['ko', 'en']:
-        state['language'] = stored_lang
-    else:
-        state['language'] = 'ko' # 기본값
-        await app.storage.browser.set('language', 'ko')
+async def how_to_make_kimchi_page(kimchi_name: str):
+    app.storage.general.setdefault('language', 'ko')
 
     def T(key: str) -> str:
-        return TRANSLATIONS[state['language']].get(key, key)
+        return TRANSLATIONS[app.storage.general['language']].get(key, key)
         
-    async def set_language(lang: str):
-        state['language'] = lang
-        await app.storage.browser.set('language', lang)
-        page_content.clear() # 컨텐츠를 지우고 다시 그려서 언어 변경 적용
+    def set_language(lang: str):
+        if lang in ['ko', 'en']:
+            app.storage.general['language'] = lang
+        page_content.clear()
         build_recipe_page()
 
     ui.add_head_html('''
@@ -613,21 +623,25 @@ async def how_to_make_kimchi_page(kimchi_name: str): # lang 파라미터는 제�
 
     def build_recipe_page():
         with page_content:
-            with ui.row().classes('absolute top-5 right-5'): # type: ignore
-                ui.button('🇰🇷', on_click=lambda: set_language('ko'), color='white' if state['language'] != 'ko' else 'blue').props('flat') # type: ignore
-                ui.button('🇺🇸', on_click=lambda: set_language('en'), color='white' if state['language'] != 'en' else 'blue').props('flat') # type: ignore
+            with ui.row().classes('absolute top-5 right-5'):
+                ui.button('🇰🇷', on_click=lambda: set_language('ko'), color='white' if app.storage.general['language'] != 'ko' else 'blue').props('flat')
+                ui.button('🇺🇸', on_click=lambda: set_language('en'), color='white' if app.storage.general['language'] != 'en' else 'blue').props('flat')
 
-            kimchi_display_name = KIMCHI_DATA.get(kimchi_name, {}).get('en_name' if state['language'] == 'en' else 'ko_name', kimchi_name)
+            if app.storage.general['language'] == 'en':
+                kimchi_display_name = KIMCHI_DATA.get(kimchi_name, {}).get('en_name', kimchi_name)
+            else:
+                kimchi_display_name = kimchi_name
+            
             ui.label(T('how_to_make_kimchi_title').format(kimchi_name=kimchi_display_name)).classes('text-5xl font-bold text-green-500 mb-8')
             
             recipe_key = f"recipe_{kimchi_name}"
-            recipe_content = TRANSLATIONS[state['language']].get(recipe_key, "Recipe not found for this kimchi.")
+            recipe_content = T(recipe_key) if recipe_key in TRANSLATIONS[app.storage.general['language']] else "Recipe not found for this kimchi."
 
             with ui.card().classes('w-full max-w-4xl bg-white/5'):
                 with ui.card_section():
                     ui.markdown(recipe_content).classes('text-gray-300 text-left')
 
-            ui.button(T('back_to_menu'), on_click=lambda: ui.navigate.to('/')).classes('mt-8 px-7 py-2 text-lg') # type: ignore
+            ui.button(T('back_to_menu'), on_click=lambda: ui.navigate.to('/')).classes('mt-8 px-7 py-2 text-lg')
             
     build_recipe_page()
 
